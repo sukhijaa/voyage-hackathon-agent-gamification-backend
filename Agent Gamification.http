@@ -1,0 +1,6 @@
+@Agent_Gamification_HostAddress = http://localhost:5056
+
+GET {{Agent_Gamification_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
