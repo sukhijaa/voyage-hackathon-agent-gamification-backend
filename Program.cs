@@ -39,7 +39,7 @@ namespace Agent_Gamification
 
             // Use CORS middleware
             app.UseCors(builder => builder
-    .WithOrigins("http://localhost:3000", "http://localhost:3000", "http://ec2-13-126-209-255.ap-south-1.compute.amazonaws.com:8100/", "http://ec2-15-206-79-201.ap-south-1.compute.amazonaws.com:8100/")
+    .WithOrigins("http://localhost:3000", "http://localhost:3000", "http://ec2-13-126-209-255.ap-south-1.compute.amazonaws.com:8100/", "http://ec2-15-206-79-201.ap-south-1.compute.amazonaws.com:8100", "http://ec2-15-206-79-201.ap-south-1.compute.amazonaws.com:8100/")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
