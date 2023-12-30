@@ -7,7 +7,7 @@ For UI Repo, please refer https://github.com/sukhijaa/voyage-hackathon-agent-gam
 Checkout the Running POC on http://ec2-15-206-79-201.ap-south-1.compute.amazonaws.com:8100/
 
 ## Demo Video
-Youtube https://youtu.be/m7RUv1xkanY
+Youtube https://youtu.be/Jfb0xdqFLSo
 
 ## Available Scripts
 
