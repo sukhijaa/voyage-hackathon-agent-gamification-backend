@@ -137,6 +137,10 @@ public class AgentAwardHistory
     public string CountryName { get; set; }
     public string AwardOn { get; set; }
 
+    public string AwardName { get; set; }
+
+    public int BookingAmount { get; set; }
+
 }
 
 
@@ -153,6 +157,7 @@ public class ReedimAwardPointsRQ
     public string AgentCode { get; set; }
     public string RedemptionRuleCode { get; set; }
     public int RequirePoints { get; set; }
+    public string RedemptionTitle { get; set; }
 }
 
 public class ReedimAwardPointsRS

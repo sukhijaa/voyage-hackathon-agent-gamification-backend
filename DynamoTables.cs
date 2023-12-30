@@ -9,6 +9,9 @@ namespace dynamoDb.model
         [DynamoDBHashKey("AgentCode")]
         public string AgentCode { get; set; }
 
+        [DynamoDBProperty("AgentName")]
+        public string AgentName { get; set; }
+
         [DynamoDBProperty("TotalPoint")]
         public int TotalPoint { get; set; }
 
@@ -69,11 +72,17 @@ namespace dynamoDb.model
         [DynamoDBProperty("AwardRuleCode")]
         public string AwardRuleCode { get; set; }
 
+        [DynamoDBProperty("AwardRuleName")]
+        public string AwardRuleName { get; set; }
+
         [DynamoDBProperty("BookingConfirmationNo")]
         public string BookingConfirmationNo { get; set; }
 
         [DynamoDBProperty("BookingDate")]
         public string BookingDate { get; set; }
+
+        [DynamoDBProperty("BookingAmount")]
+        public int BookingAmount { get; set; }
 
         [DynamoDBProperty("EarnedPoint")]
         public int EarnedPoint { get; set; }
@@ -141,6 +150,9 @@ namespace dynamoDb.model
 
         [DynamoDBProperty("LastModifyON")]
         public string LastModifyON { get; set; }
+
+        [DynamoDBProperty("RedemptionTitle")]
+        public string RedemptionTitle { get; set; }
 
         //[DynamoDBProperty("LastModifyON")]
         //public StatusCodes StatusCode { get; set; }

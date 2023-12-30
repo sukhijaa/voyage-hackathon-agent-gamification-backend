@@ -39,7 +39,7 @@ namespace Agent_Gamification
 
             // Use CORS middleware
             app.UseCors(builder => builder
-    .WithOrigins("http://localhost:3000", "http://localhost:3000")
+    .WithOrigins("http://localhost:3000", "http://localhost:3000", "http://ec2-13-126-209-255.ap-south-1.compute.amazonaws.com:8100/")
     .AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials());
@@ -76,7 +76,7 @@ namespace Agent_Gamification
 
             }).WithOpenApi();
 
-            app.MapGet("/GetLeaderboardRankings", ([FromBody] LeaderboardRankingRQ pLeaderboardRankingRQ) =>
+            app.MapGet("/GetLeaderboardRankings", ([AsParameters] LeaderboardRankingRQ pLeaderboardRankingRQ) =>
             {
                 LeaderboardRankingRS response = new LeaderboardRankingRS();
                 try
@@ -92,7 +92,7 @@ namespace Agent_Gamification
 
             }).WithOpenApi();
 
-            app.MapGet("/GetAwardHistory", ([FromBody] AwardHistoryRQ pAwardHistoryRQ) =>
+            app.MapGet("/GetAwardHistory", ([AsParameters] AwardHistoryRQ pAwardHistoryRQ) =>
             {
                 AwardHistoryRS response = new AwardHistoryRS();
                 try
@@ -109,7 +109,7 @@ namespace Agent_Gamification
 
             }).WithOpenApi();
 
-            app.MapPost("/ReedimAwardPoints", (ReedimAwardPointsRQ pReedimAwardPointsRQ) =>
+            app.MapPost("/ReedemAwardPoints", (ReedimAwardPointsRQ pReedimAwardPointsRQ) =>
             {
                 ReedimAwardPointsRS response = new ReedimAwardPointsRS();
                 try
@@ -125,7 +125,7 @@ namespace Agent_Gamification
 
             }).WithOpenApi();
 
-            app.MapGet("/GetRedemptionHistory", ([FromBody] RedemptionHistoryRQ pAwardHistoryRQ) =>
+            app.MapGet("/GetRedemptionHistory", ([AsParameters] RedemptionHistoryRQ pAwardHistoryRQ) =>
             {
                 List<RedemptionHistory> response = new List<RedemptionHistory>();
                 try
@@ -149,6 +149,22 @@ namespace Agent_Gamification
                 {
                     Award award = new Award();
                     response = award.GetAgentProfile(pAgentProfileRQ);
+                }
+                catch (Exception ex)
+                {
+
+                }
+                return response;
+
+            }).WithOpenApi();
+
+            app.MapGet("/GetAgentList", ([AsParameters] AgentProfileRQ pAgentProfileRQ) =>
+            {
+                List<AgentProfile> response = new List<AgentProfile>();
+                try
+                {
+                    Award award = new Award();
+                    response = award.GetAgentList();
                 }
                 catch (Exception ex)
                 {

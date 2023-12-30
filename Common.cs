@@ -102,8 +102,10 @@ public class Award
 
                         awardHistory.AgentCode = pAddAwardAfterBookingRQ.AgentCode;
                         awardHistory.AwardRuleCode = record.RuleCode;
+                        awardHistory.AwardRuleName = record.RuleName;
                         awardHistory.BookingConfirmationNo = pAddAwardAfterBookingRQ.BookingConfirmationNo;
                         awardHistory.BookingDate = DateTime.UtcNow.ToLongDateString();
+                        awardHistory.BookingAmount = pAddAwardAfterBookingRQ.BookingAmount;
                         awardHistory.EarnedPoint = earnedPoints;
                         agentProfile.TotalPoint += earnedPoints;
                         agentProfile.CurrentPoint += earnedPoints;
@@ -115,7 +117,7 @@ public class Award
 
                         tasks.Add(Dynamo.DynamoDBContext.SaveAsync(awardHistory));
                     }
-                    //Every 100th Booking - 100
+                    //Every 10th Booking - 100
                     else if (record.RuleCode == "AWD002")
                     {
                         if ((Convert.ToInt32(pAddAwardAfterBookingRQ.BookingAmount * (record.RulePoint * .01))) <= 0)
@@ -124,11 +126,13 @@ public class Award
                             earnedPoints = Convert.ToInt32(pAddAwardAfterBookingRQ.BookingAmount * (record.RulePoint * .01));
 
                         var distinctType = agentAwardHistory.FindAll(item => item.BookingConfirmationNo == pAddAwardAfterBookingRQ.BookingConfirmationNo).Distinct();
-                        if (distinctType != null && distinctType.Count() > 0 && distinctType.Count() % 100 == 0)
+                        if (distinctType != null && distinctType.Count() > 0 && distinctType.Count() % 10 == 0)
                         {
                             awardHistory.AgentCode = pAddAwardAfterBookingRQ.AgentCode;
                             awardHistory.AwardRuleCode = record.RuleCode;
+                            awardHistory.AwardRuleName = record.RuleName;
                             awardHistory.BookingConfirmationNo = pAddAwardAfterBookingRQ.BookingConfirmationNo;
+                            awardHistory.BookingAmount = pAddAwardAfterBookingRQ.BookingAmount;
                             awardHistory.BookingDate = DateTime.UtcNow.ToLongDateString();
                             awardHistory.EarnedPoint = earnedPoints;
                             agentProfile.TotalPoint += earnedPoints;
@@ -142,7 +146,7 @@ public class Award
                             tasks.Add(Dynamo.DynamoDBContext.SaveAsync(awardHistory));
                         }
                     }
-                    //Every 100th Booking - 1000
+                    //Every New City
                     else if (record.RuleCode == "AWD003")
                     {
                         if ((Convert.ToInt32(pAddAwardAfterBookingRQ.BookingAmount * .01)) <= 0)
@@ -155,7 +159,9 @@ public class Award
                         {
                             awardHistory.AgentCode = pAddAwardAfterBookingRQ.AgentCode;
                             awardHistory.AwardRuleCode = record.RuleCode;
+                            awardHistory.AwardRuleName = record.RuleName;
                             awardHistory.BookingConfirmationNo = pAddAwardAfterBookingRQ.BookingConfirmationNo;
+                            awardHistory.BookingAmount = pAddAwardAfterBookingRQ.BookingAmount;
                             awardHistory.BookingDate = DateTime.UtcNow.ToLongDateString();
                             awardHistory.EarnedPoint = earnedPoints;
                             agentProfile.TotalPoint += earnedPoints;
@@ -169,7 +175,7 @@ public class Award
                             tasks.Add(Dynamo.DynamoDBContext.SaveAsync(awardHistory));
                         }
                     }
-                    //Every 100th Booking - 1000
+                    //Every New Country
                     else if (record.RuleCode == "AWD004")
                     {
                         if ((Convert.ToInt32(pAddAwardAfterBookingRQ.BookingAmount * .01)) <= 0)
@@ -182,7 +188,9 @@ public class Award
                         {
                             awardHistory.AgentCode = pAddAwardAfterBookingRQ.AgentCode;
                             awardHistory.AwardRuleCode = record.RuleCode;
+                            awardHistory.AwardRuleName = record.RuleName;
                             awardHistory.BookingConfirmationNo = pAddAwardAfterBookingRQ.BookingConfirmationNo;
+                            awardHistory.BookingAmount = pAddAwardAfterBookingRQ.BookingAmount;
                             awardHistory.BookingDate = DateTime.UtcNow.ToLongDateString();
                             awardHistory.EarnedPoint = earnedPoints;
                             agentProfile.TotalPoint += earnedPoints;
@@ -451,6 +459,8 @@ public class Award
                 agentAwardHistory.CountryCode = awardHistory.CountryCode;
                 agentAwardHistory.CountryName = awardHistory.CountryName;
                 agentAwardHistory.AwardOn = awardHistory.LastModifyON;
+                agentAwardHistory.AwardName = awardHistory.AwardRuleName;
+                agentAwardHistory.BookingAmount = awardHistory.BookingAmount;
                 awardHistoryRS.AwardHistory.Add(agentAwardHistory);
 
             }
@@ -483,21 +493,18 @@ public class Award
             conditions.Add(new ScanCondition("AgentCode", ScanOperator.Equal, pReedimAwardPointsRQ.AgentCode));
             List<RedemptionHistory> listRedemptionHistory = Dynamo.DynamoDBContext.ScanAsync<RedemptionHistory>(conditions).GetRemainingAsync().Result;
 
-            var distinctTypeIDs = listRedemptionHistory.FirstOrDefault(x => x.AgentCode == pReedimAwardPointsRQ.AgentCode && x.RedemptionRuleCode == pReedimAwardPointsRQ.RedemptionRuleCode);
-            if (distinctTypeIDs == null)
-            {
-                RedemptionHistory redemptionHistory = new RedemptionHistory();
-                redemptionHistory.AgentCode = pReedimAwardPointsRQ.AgentCode;
-                redemptionHistory.RedemptionRuleCode = pReedimAwardPointsRQ.RedemptionRuleCode;
-                redemptionHistory.PointsUsed = pReedimAwardPointsRQ.RequirePoints;
-                redemptionHistory.LastModifyON = DateTime.Now.ToLongTimeString();
+            RedemptionHistory redemptionHistory = new RedemptionHistory();
+            redemptionHistory.AgentCode = pReedimAwardPointsRQ.AgentCode;
+            redemptionHistory.RedemptionRuleCode = pReedimAwardPointsRQ.RedemptionRuleCode;
+            redemptionHistory.PointsUsed = pReedimAwardPointsRQ.RequirePoints;
+            redemptionHistory.LastModifyON = DateTime.Now.ToString();
+            redemptionHistory.RedemptionTitle = pReedimAwardPointsRQ.RedemptionTitle;
 
-                tasks.Add(Dynamo.DynamoDBContext.SaveAsync(redemptionHistory));
+            tasks.Add(Dynamo.DynamoDBContext.SaveAsync(redemptionHistory));
 
 
-                agentProfile.CurrentPoint = agentProfile.CurrentPoint - pReedimAwardPointsRQ.RequirePoints;
-                tasks.Add(Dynamo.DynamoDBContext.SaveAsync(agentProfile));
-            }
+            agentProfile.CurrentPoint = agentProfile.CurrentPoint - pReedimAwardPointsRQ.RequirePoints;
+            tasks.Add(Dynamo.DynamoDBContext.SaveAsync(agentProfile));
 
             Task.WhenAll(tasks).GetAwaiter().GetResult();
             bool isSucces = true;
@@ -565,6 +572,23 @@ public class Award
             var conditions = new List<ScanCondition>();
             if (!string.IsNullOrEmpty(pAgentProfileRQ.AgentCode))
                 conditions.Add(new ScanCondition("AgentCode", ScanOperator.Equal, pAgentProfileRQ.AgentCode));
+            listAgentProfile = Dynamo.DynamoDBContext.ScanAsync<AgentProfile>(conditions).GetRemainingAsync().Result;
+
+        }
+        catch (Exception ex)
+        {
+            //listRedemptionHistory.Add(new RedemptionHistory { StatusCode = StatusCodes.Failed, ErrorCode = ErrrCodes.PrcessingError, Error = ex.Message });
+        }
+        return listAgentProfile;
+    }
+
+    public List<AgentProfile> GetAgentList()
+    {
+        List<AgentProfile> listAgentProfile = new List<AgentProfile>();
+        try
+        {
+            // Get Agent Profile
+            var conditions = new List<ScanCondition>();
             listAgentProfile = Dynamo.DynamoDBContext.ScanAsync<AgentProfile>(conditions).GetRemainingAsync().Result;
 
         }
