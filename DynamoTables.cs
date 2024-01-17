@@ -39,6 +39,9 @@ namespace dynamoDb.model
         [DynamoDBProperty("Rank")]
         public int Rank { get; set; }
 
+        [DynamoDBProperty("LastLoginTime")]
+        public string LastLoginTime { get; set; }
+
     }
 
     [DynamoDBTable("AwardRules")]
